@@ -16,11 +16,22 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
-  const saveEdit = e => {
-    e.preventDefault();
+  const saveEdit = (event, colorToEdit) => {
+    event.preventDefault();
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    axiosWithAuth()
+      .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then(res => {
+        console.log(res.data);
+        updateColors(colors.map(color => color.id != colorToEdit.id ? color : res.data))
+        setColorToEdit(initialColor)
+        // props.history.push('/bubblepage')
+      })
+      .catch(err => {
+        console.log(err.response);
+      });
   };
 
   const deleteColor = (event, colorToEdit) => {
